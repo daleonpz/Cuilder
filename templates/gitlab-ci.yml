@@ -1,0 +1,54 @@
+############################################
+#   YAML ANCHORS·
+############################################
+variables:
+    _PRIVATE_TOKEN: __YOUR_TOKEN__
+    _INPUT_DIRS: "-I include/ -I src/" # Add here your Input directories
+
+############################################
+#   CI/CD Stages
+############################################
+stages:
+    - open_merge_request
+    - code_QA
+    - unit_testing
+    - update_changelog
+
+code_QA:
+    stage: code_QA 
+    timeout: 2h
+    image: git.infra.cospace.de:4567/guidelines/code-quality-control/build-docker:latest
+    script:
+        - bash /usr/checkers/00-style-analysis.sh   ${_INPUT_DIRS}
+        - bash /usr/checkers/01-code-complexity.sh  ${_INPUT_DIRS} 
+        - bash /usr/checkers/02-static-analysis.sh  ${_INPUT_DIRS} 
+
+unit_testing:
+    stage: unit_testing 
+    image: "ruby:2.5"
+    timeout: 2h
+    script:
+        - gem install ceedling
+        - cd test/
+        - ceedling clobber test:all
+
+openMr:
+    image: frolvlad/alpine-python3
+    before_script: 
+        - apk add --update --no-cache bash
+        - apk add --update --no-cache curl
+    stage: open_merge_request 
+    only:
+      - /^feature\/*/   # We have a very strict naming convention
+    script:
+        - chmod +x gitlab_utils/autoMergeRequest.sh
+        - HOST=${CI_PROJECT_URL} CI_PROJECT_ID=${CI_PROJECT_ID} CI_COMMIT_REF_NAME=${CI_COMMIT_REF_NAME} GITLAB_USER_ID=${GITLAB_USER_ID} PRIVATE_TOKEN=${_PRIVATE_TOKEN} ./gitlab_utils/autoMergeRequest.sh 
+
+
+update_changelog:
+    image: nyurik/alpine-python3-requests 
+    stage: update_changelog 
+    only:
+      - /^master\/*/   # We have a very strict naming convention 
+    script:
+        - python3 gitlab_utils/update_changelog.py -i ${CI_PROJECT_ID} -t ${_PRIVATE_TOKEN} -u ${CI_PROJECT_URL}
