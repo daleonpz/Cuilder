@@ -9,3 +9,22 @@ You need a **Personal Access Token** to use FromNothing.
 
 
 FromNothing requires a YAML file. [Here is an example](https://github.com/daleonpz/FromNothing/blob/master/example.yml).
+
+
+## C Projects
+- Features: 
+  - TDD with ceedling and docker
+  - Code analysis with docker. 
+      - Cyclomatic complexity with [Lizard](https://github.com/terryyin/lizard)
+      - Static analyser with [CppCheck](http://cppcheck.sourceforge.net/)
+      - Style checking with [AStyle](http://astyle.sourceforge.net/)
+
+# TODO:
+```sh
+$  todo-txt ls
+2 @fromnothing add error handling everywhere
+4 @fromnothing add file templates for c project
+3 @fromnothing change printfs for logging
+5 @fromnothing create docker image QA to pull from in DockerHub
+1 @fromnothing add tests
+```
