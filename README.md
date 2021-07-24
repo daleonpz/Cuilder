@@ -1,3 +1,5 @@
-# Project Creator
+# FromNothing
 
-create c and bash projects from templates
+Project Creator that allows you to create a basic project C structure and commit it to gitlab. 
+
+
