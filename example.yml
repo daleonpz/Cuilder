@@ -1,0 +1,22 @@
+---
+project:
+    name: "new_project"
+    clone_type: "ssh"
+    type: "c"
+    path: "/mypath/to/my/new/project"
+    templates_path: "/path/to/my/project/templates"
+    gitlab:
+        namespace: "my.gitlab.account"
+        server: "my.gitlab.server"
+        api_token: "MyRaNdOmToKeN"
+    c_project:
+        mcu_family: "msp430"
+        mcu: "msp430fr2433"
+        build_system: "rake"
+        toolchain_image: "myDockerImage/forMytoolchain/toolchain-msp430"
+        codeanalysis_image: "myDockerImage/forMy/code-quality-control"
+
+
+
+
+
