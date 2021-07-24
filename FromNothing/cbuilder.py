@@ -33,14 +33,6 @@ class CBuilder(object):
                 "${COMMAND_TO_RUN_ON_DOCKER[@]}"
             ''')
 
-    def __create_git_files(self):
-        print("Creating general git files...")
-        shutil.copy( self.current_prj['templates_path'] + '/gitignore', '.gitignore')
-        shutil.copy( self.current_prj['templates_path'] + '/authors', 'AUTHORS')
-        open('README', 'a').close() 
-        open('LICENSE', 'a').close() 
-        open('CHANGELOG', 'a').close() 
-
     def __load_buildsystem(self):
         build_system = self.current_prj['c_project']['build_system']
         mcu_family = self.current_prj['c_project']['mcu_family']
@@ -57,12 +49,6 @@ class CBuilder(object):
             self.__create_docker_runner( self.current_prj['c_project']['toolchain_image'],
                     build_system + 'build.sh', 
                     'sh -c "rake clean DEVICE=' + mcu + ' && rake DEVICE=' + mcu + '"')
-
-
-    def __create_gitlab_cicd_file(self):
-        #TODO: use also template, maybe this in prjbuilder.py
-        print("Creating gitlab CI/CD file...")
-        shutil.copy( self.current_prj['templates_path']+ '/gitlab-ci.yml',  '.gitlab-ci.yml')
 
     def create(self):
         print("CREATING C PROJECT TEMPLATE...")
@@ -82,11 +68,7 @@ class CBuilder(object):
                     bash /usr/checkers/02-static-analysis.sh    -I src/ -I include/"
                     ''')
 
-        self.__create_git_files()
-
         self.__load_buildsystem()
-
-        self.__create_gitlab_cicd_file()
 
         print("Success: C PROJECT TEMPLATE CREATED")
 
