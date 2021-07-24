@@ -12,6 +12,10 @@ class GitSupport(object):
         self.service = git_info['service']
         self.prjname = prjname
         self.clone_type = clone_type
+        self.authors = None
+        if 'authors' in git_info:
+            self.authors = git_info['authors']
+
 
     def init_repo(self):
         process = subprocess.Popen(['git', 'init'], stdout=PIPE, stderr=PIPE)
@@ -22,13 +26,24 @@ class GitSupport(object):
         print("Creating gitlab CI/CD file...")
 #         shutil.copy( self.current_prj['templates_path']+ '/gitlab-ci.yml',  '.gitlab-ci.yml')
 
+    def __create_authors_file(self):
+        with open('AUTHORS','w') as f: 
+            f.write("AUTHORS:\n")
+
+            if self.authors is not None:
+                for x in range(0, len(self.authors['name'])):
+                    f.write("* " + self.authors['name'][x] + " ")
+                    f.write("("  + self.authors['email'][x] + ")\n")
+            else:
+                f.write("<Your-Name> <youre_mail> (your_website)")
+
     def create_info_files(self):
         print("Creating general git files...")
-#         shutil.copy( self.current_prj['templates_path'] + '/gitignore', '.gitignore')
-#         shutil.copy( self.current_prj['templates_path'] + '/authors', 'AUTHORS')
+        open('.gitignore', 'a').close() 
         open('README', 'a').close() 
         open('LICENSE', 'a').close() 
         open('CHANGELOG', 'a').close() 
+        self.__create_authors_file()
 
     def push_project(self):
 
