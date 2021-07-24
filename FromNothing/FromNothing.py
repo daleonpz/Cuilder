@@ -45,7 +45,7 @@ class FromNothing(object):
 #         elif prj_type == 'bash':
 #             self.__create_bash()
         else:
-            print("Unknow project type")
+            sys.exist("Unknow project type")
         
         gitsupport.init_repo()
         gitsupport.create_info_files()
