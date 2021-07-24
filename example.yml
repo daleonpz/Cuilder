@@ -5,9 +5,10 @@ project:
     type: "c"
     path: "/mypath/to/my/new/project"
     templates_path: "/path/to/my/project/templates"
-    gitlab:
-        namespace: "my.gitlab.account"
-        server: "my.gitlab.server"
+    git:
+        service: 'github'
+        user: "my.git.account"
+        server: "my.git.server"
         api_token: "MyRaNdOmToKeN"
     c_project:
         mcu_family: "msp430"
