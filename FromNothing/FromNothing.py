@@ -2,9 +2,21 @@ import yaml
 import sys
 import os
 import shutil
+import errno
 
 from .cbuilder import CBuilder
 from .gitsupport import GitSupport
+
+def copy_file(src: str, dest: str):
+    try:
+        shutil.copy(src, dest)
+    except IOError as e:
+        # ENOENT(2): file does not exist, raised also on missing dest parent dir
+        if e.errno != errno.ENOENT:
+            raise
+        # try creating parent directories
+        os.makedirs(os.path.dirname(dest))
+        shutil.copy(src, dest)
 
 class FromNothing(object):
     def __init__(self, yml_file: str): 
@@ -19,14 +31,16 @@ class FromNothing(object):
         for prj, prj_info in self.projects.items():
             self.__create(prj_info)
 
-    def __go_to_project_dir(self):
-        prj_path = self.current_prj['path'] + '/' + self.current_prj['name']
-        try: 
-            os.mkdir(prj_path)
-        except FileExistsError:
-            sys.exit("An existing project with the following path already exist: " + prj_path)
-        os.chdir(prj_path)
-        print(os.getcwd())
+    
+    @staticmethod
+    def __move_extra_files(current_prj: dict, prj_path: str):
+        print(os.path.abspath(os.getcwd()))
+        if 'extra_files' in current_prj :
+            print("Moving extra files...")
+
+            for filetag, filepaths in current_prj['extra_files'].items():
+                copy_file( filepaths[0], 
+                        prj_path + '/' + filepaths[1])
 
     def __create(self, prj):
         self.current_prj = prj
@@ -36,8 +50,16 @@ class FromNothing(object):
                                 self.current_prj['name'],
                                 self.current_prj['clone_type'])
 
-        self.__go_to_project_dir()
+        prj_dir = self.current_prj['path'] + '/' + self.current_prj['name']
 
+        try: 
+            os.mkdir(prj_dir)
+        except FileExistsError:
+            sys.exit("An existing project with the following path already exist: " + prj_dir)
+
+        self.__move_extra_files(self.current_prj, prj_dir)
+        os.chdir(prj_dir)
+        print(os.getcwd())
 
         if prj_type == 'c':
             cbuilder = CBuilder(self.current_prj) 
@@ -49,6 +71,5 @@ class FromNothing(object):
         
         gitsupport.init_repo()
         gitsupport.create_info_files()
-        gitsupport.create_gitlab_cicd_file()
         gitsupport.push_project()
 
