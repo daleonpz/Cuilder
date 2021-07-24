@@ -1,4 +1,4 @@
 from FromNothing import *
 
-builder = FromNothing('new_project.yml')
+builder = FromNothing('example.yml')
 builder.new_project()
