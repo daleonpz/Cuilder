@@ -50,14 +50,55 @@ class CBuilder(object):
                     build_system + 'build.sh', 
                     'sh -c "rake clean DEVICE=' + mcu + ' && rake DEVICE=' + mcu + '"')
 
+    @staticmethod
+    def __create_test_example_file(filename):
+        with open(filename, 'w') as f:
+            f.write(""" // Ceedling test example
+#include "unity.h"
+#include "cmock.h"
+#include "dummy.h"
+
+void setUp() 
+{
+}
+
+void tearDown() 
+{
+}
+
+void test_example()
+{
+    TEST_ASSERT_TRUE(1,1);
+}
+            """)
+
+    @staticmethod
+    def __create_main_file(filename):
+        with open(filename, 'w') as f:
+            f.write("""#include "<stdint.h>"
+
+int main(void)
+{
+    // Your application
+}
+            """)
+
     def create(self):
         print("CREATING C PROJECT TEMPLATE...")
 
         utils_dir = "utils"
         os.mkdir("test")
+        os.mkdir("test/test_files")
+        self.__create_test_example_file("test/test_files/test_dummy.c")
+
         os.mkdir("src")
+        self.__create_main_file("src/main.c")
+
         os.mkdir("include")
+        open('./include/dummy.h', 'a').close()
+
         os.mkdir("doc")
+        open('./doc/dummy.md', 'a').close()
         os.mkdir(utils_dir)
 
         self.__create_docker_runner( self.current_prj['c_project']['codeanalysis_image'],
