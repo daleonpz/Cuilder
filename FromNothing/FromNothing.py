@@ -3,9 +3,12 @@ import sys
 import os
 import shutil
 import errno
+import logging 
 
 from .cbuilder import CBuilder
 from .gitsupport import GitSupport
+
+logger = logging.getLogger(__name__)
 
 def copy_file(src: str, dest: str):
     try:
@@ -34,9 +37,9 @@ class FromNothing(object):
     
     @staticmethod
     def __move_extra_files(current_prj: dict, prj_path: str):
-        print(os.path.abspath(os.getcwd()))
+        logger.info(os.path.abspath(os.getcwd()))
         if 'extra_files' in current_prj :
-            print("Moving extra files...")
+            logger.info("Moving extra files...")
 
             for filetag, filepaths in current_prj['extra_files'].items():
                 copy_file( filepaths[0], 
@@ -59,7 +62,7 @@ class FromNothing(object):
 
         self.__move_extra_files(self.current_prj, prj_dir)
         os.chdir(prj_dir)
-        print(os.getcwd())
+        logger.info(os.getcwd())
 
         if prj_type == 'c':
             cbuilder = CBuilder(self.current_prj) 
@@ -71,5 +74,5 @@ class FromNothing(object):
         
         gitsupport.init_repo()
         gitsupport.create_info_files()
-        gitsupport.push_project()
+#         gitsupport.push_project()
 

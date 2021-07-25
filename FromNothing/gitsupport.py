@@ -1,5 +1,8 @@
 import subprocess
 import requests
+import logging
+logger = logging.getLogger(__name__)
+
 PIPE = subprocess.PIPE
 
 class GitSupport(object):
@@ -15,6 +18,7 @@ class GitSupport(object):
     def init_repo(self):
         process = subprocess.Popen(['git', 'init'], stdout=PIPE, stderr=PIPE)
         stdoutput, stderroutput = process.communicate()
+        logger.debug(stdoutput.decode('utf-8'))
 
     def __create_authors_file(self):
         with open('AUTHORS','w') as f: 
@@ -28,7 +32,7 @@ class GitSupport(object):
                 f.write("<Your-Name> <youre_mail> (your_website)")
 
     def create_info_files(self):
-        print("Creating general git files...")
+        logger.info("Creating general git files...")
         open('.gitignore', 'a').close()
         open('README', 'a').close()
         open('LICENSE', 'a').close()
@@ -46,15 +50,16 @@ class GitSupport(object):
             r = requests.post('https://api.github.com/user/repos', 
                     auth=(user, api_token),
                     json = {"name": self.prjname} )
-            print("Request Status :")
-            print(r.status_code)
+            logger.info("Request Status :")
+            logger.info(r.status_code)
 
         process = subprocess.Popen(['git', 'add','--all'], stdout=PIPE, stderr=PIPE)
         stdoutput, stderroutput = process.communicate()
-        print(stdoutput)
+        logger.debug(stdoutput.decode('utf-8'))
+
         process = subprocess.Popen(['git', 'commit','--m', 'New Project'], stdout=PIPE, stderr=PIPE)
         stdoutput, stderroutput = process.communicate()
-        print(stdoutput)
+        logger.debug(stdoutput.decode('utf-8'))
 
         gitpath = server + ":" + user + "/" + self.prjname  + '.git'
         
@@ -63,11 +68,12 @@ class GitSupport(object):
         else:
             gitpath = 'https://' +  gitpath
 
-        print('GitPath: ' + gitpath)
+        logger.info('GitPath: ' + gitpath)
         process = subprocess.Popen(['git', 'remote', 'add','origin', gitpath], stdout=PIPE, stderr=PIPE)
         stdoutput, stderroutput = process.communicate()
-        print(stdoutput)
+        logger.debug(stdoutput.decode('utf-8'))
+
         process = subprocess.Popen(['git', 'push','--set-upstream', 'origin', 'master'], stdout=PIPE, stderr=PIPE)
         stdoutput, stderroutput = process.communicate()
-        print(stdoutput)
+        logger.debug(stdoutput.decode('utf-8'))
 

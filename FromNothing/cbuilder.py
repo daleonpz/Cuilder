@@ -1,5 +1,7 @@
 import os
 import shutil
+import logging
+logger = logging.getLogger(__name__)
 
 class CBuilder(object):
     def __init__(self, current_prj: dict):
@@ -7,8 +9,8 @@ class CBuilder(object):
 
     @staticmethod
     def __create_docker_runner(image:str, filename: str, command:str):
-        print("Loading Code Checkers...")
-        print("Filename: " + filename)
+        logger.info("Loading Code Checkers...")
+        logger.info("Filename: " + filename)
         with open(filename, 'w') as f:
             f.write('#!/bin/bash \n\n')
             
@@ -41,7 +43,7 @@ class CBuilder(object):
         buildsystem_prefix = self.current_prj['templates_path'] + '/mcu/' +  \
                         mcu_family + '/' + build_system
 
-        print("Loading Build System '"+ build_system + "' for MCU: " + mcu)
+        logger.info("Loading Build System '"+ build_system + "' for MCU: " + mcu)
        
         if build_system == 'rake':
             shutil.copy( buildsystem_prefix + 'file.rb',  './')
@@ -84,7 +86,7 @@ int main(void)
             """)
 
     def create(self):
-        print("CREATING C PROJECT TEMPLATE...")
+        logger.info("CREATING C PROJECT TEMPLATE...")
 
         utils_dir = "utils"
         os.mkdir("test")
@@ -111,6 +113,6 @@ int main(void)
 
         self.__load_buildsystem()
 
-        print("Success: C PROJECT TEMPLATE CREATED")
+        logger.info("Success: C PROJECT TEMPLATE CREATED")
 
 
