@@ -74,5 +74,5 @@ class FromNothing(object):
         
         gitsupport.init_repo()
         gitsupport.create_info_files()
-#         gitsupport.push_project()
+        gitsupport.push_project()
 
