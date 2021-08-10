@@ -11,6 +11,12 @@ You need a **Personal Access Token** to use FromNothing.
 FromNothing requires a YAML file. [Here is an example](https://github.com/daleonpz/FromNothing/blob/master/example.yml).
 
 
+## Run Tests
+
+```sh
+$ python -m unittest discover
+```
+
 ## C Projects
 - Features: 
   - TDD with ceedling and docker
