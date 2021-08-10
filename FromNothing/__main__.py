@@ -34,11 +34,11 @@ def parse_arg(argv):
     try:
         opts, args = getopt.getopt(argv,"hf:",["file="])
     except getopt.GetoptError:
-        logging.error('FromNothing -f <project_yaml_file>')
+        print('FromNothing -f <project_yaml_file>')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            logging.info('FromNothing -f <project_yaml_file>')
+            print('FromNothing -f <project_yaml_file>')
             sys.exit()
         elif opt in ("-f", "--file"):
             yml_file = arg
@@ -47,8 +47,8 @@ def parse_arg(argv):
     if yml_file_found: 
         return yml_file
     else:
-        logging.error("Not enough arguments...")
-        logging.info('FromNothing -f <project_yaml_file>')
+        print("Not enough arguments...")
+        print('FromNothing -f <project_yaml_file>')
         sys.exit(2)
 
 def main():
