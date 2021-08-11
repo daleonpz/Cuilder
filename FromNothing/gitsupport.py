@@ -53,6 +53,15 @@ class GitSupport(object):
             logger.info("Request Status :")
             logger.info(r.status_code)
 
+        
+        if service == 'gitlab':
+            r = requests.post('https://' + server + '/api/v4/projects', 
+                    headers={'PRIVATE-TOKEN': api_token},
+                    json = {"path": self.prjname + '&namespace_id=' + user} )
+            logger.info("Request Status :")
+            logger.info(r.status_code)
+
+
         process = subprocess.Popen(['git', 'add','--all'], stdout=PIPE, stderr=PIPE)
         stdoutput, stderroutput = process.communicate()
         logger.debug(stdoutput.decode('utf-8'))
